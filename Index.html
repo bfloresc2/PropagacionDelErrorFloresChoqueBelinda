@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Propagación del Error</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+        line-height: 1.6;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        background: #fff;
+        padding: 20px 40px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1,
+      h2 {
+        color: #4caf50;
+      }
+      .problem-section {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+        border-radius: 4px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      pre {
+        background: #eef;
+        padding: 15px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin-top: 15px;
+      }
+      hr {
+        border: 0;
+        height: 1px;
+        background: #ccc;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Calculadora de Propagacion del Error</h1>
+      <p>
+        Introduce los valores para cada problema y haz clic en "Calcular" para
+        ver la solución. 🧮
+      </p>
+
+      <hr />
+
+      <div class="problem-section">
+        <h2>Problema 1: Datación con Carbono-14</h2>
+        <label for="porcentajeRestante1"
+          >Porcentaje de Carbono-14 restante (%)</label
+        >
+        <input type="number" id="porcentajeRestante1" value="77.45" />
+        <button onclick="calcularProblema1()">Calcular</button>
+        <pre id="resultado1"></pre>
+      </div>
+
+      <hr />
+
+      <div class="problem-section">
+        <h2>Problema 2: Ley de Enfriamiento de Newton</h2>
+        <label for="temperaturaAmbiente2"
+          >Temperatura de la habitación (°F)</label
+        >
+        <input type="number" id="temperaturaAmbiente2" value="69" />
+        <label for="temperaturaInicial2"
+          >Temperatura del cuerpo a la llegada (°F)</label
+        >
+        <input type="number" id="temperaturaInicial2" value="79.5" />
+        <label for="temperaturaDespues2"
+          >Temperatura del cuerpo 1 hora después (°F)</label
+        >
+        <input type="number" id="temperaturaDespues2" value="78.0" />
+        <label for="temperaturaNormal2"
+          >Temperatura normal del cuerpo (°F)</label
+        >
+        <input type="number" id="temperaturaNormal2" value="98.6" />
+        <button onclick="calcularProblema2()">Calcular</button>
+        <pre id="resultado2"></pre>
+      </div>
+
+      <hr />
+
+      <div class="problem-section">
+        <h2>Problema Extra: Propagación del Error en Huellas de Sucre</h2>
+        <label for="porcentajeRestante3"
+          >Porcentaje de Carbono-14 restante (%)</label
+        >
+        <input type="number" id="porcentajeRestante3" value="15" />
+        <label for="errorPorcentual3">Error de medición (%)</label>
+        <input type="number" id="errorPorcentual3" value="1" />
+        <button onclick="calcularProblema3()">Calcular</button>
+        <pre id="resultado3"></pre>
+      </div>
+    </div>
+
+    <script>
+      // Función para resolver el problema 1: Datación con Carbono-14
+      function calcularProblema1() {
+        const mediaVida = 5730;
+        const porcentajeRestanteInput = document.getElementById(
+          "porcentajeRestante1"
+        ).value;
+        const porcentajeRestante = porcentajeRestanteInput / 100;
+
+        if (porcentajeRestante <= 0 || porcentajeRestante > 1) {
+          document.getElementById("resultado1").textContent =
+            "Por favor, introduce un porcentaje válido (entre 0 y 100).";
+          return;
+        }
+
+        const k = Math.log(0.5) / mediaVida;
+        const t = Math.log(porcentajeRestante) / k;
+        const edadRedondeada = Math.round(t);
+
+        const resultado = `
+**Problema 1: Datación con Carbono-14**
+---------------------------------------
+Vida media (T): ${mediaVida} años
+Porcentaje restante: ${porcentajeRestanteInput}%
+
+Paso 1: Cálculo de la constante k
+k = ln(0.5) / T = ${k.toFixed(10)}
+
+Paso 2: Cálculo de la edad (t)
+t = ln(${porcentajeRestanteInput / 100}) / k = ${t.toFixed(2)} años
+
+Paso 3: Redondeo al año más cercano
+Edad estimada: ${edadRedondeada} años
+            `;
+        document.getElementById("resultado1").textContent = resultado;
+      }
+
+      // Función para resolver el problema 2: Ley de Enfriamiento de Newton
+      function calcularProblema2() {
+        const Ts = parseFloat(
+          document.getElementById("temperaturaAmbiente2").value
+        );
+        const T1 = parseFloat(
+          document.getElementById("temperaturaInicial2").value
+        );
+        const T2 = parseFloat(
+          document.getElementById("temperaturaDespues2").value
+        );
+        const T_cuerpoNormal = parseFloat(
+          document.getElementById("temperaturaNormal2").value
+        );
+
+        if (isNaN(Ts) || isNaN(T1) || isNaN(T2) || isNaN(T_cuerpoNormal)) {
+          document.getElementById("resultado2").textContent =
+            "Por favor, introduce valores numéricos válidos.";
+          return;
+        }
+
+        const k = -Math.log((T2 - Ts) / (T1 - Ts));
+        const t_muerte = -Math.log((T1 - Ts) / (T_cuerpoNormal - Ts)) / k;
+
+        const horasAntes = Math.floor(t_muerte);
+        const minutosAntes = Math.round((t_muerte - horasAntes) * 60);
+
+        const horaLlegada = new Date();
+        horaLlegada.setHours(21);
+        horaLlegada.setMinutes(18);
+        horaLlegada.setSeconds(0);
+        horaLlegada.setMilliseconds(0);
+
+        const horaMuerte = new Date(
+          horaLlegada.getTime() - t_muerte * 60 * 60 * 1000
+        );
+        const horaMuerteFormato = horaMuerte.toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        const resultado = `
+**Problema 2: Ley de Enfriamiento de Newton**
+---------------------------------------------
+Temperatura del entorno (Ts): ${Ts}°F
+Temperatura inicial (a las 9:18 PM): ${T1}°F
+Temperatura una hora después: ${T2}°F
+Temperatura normal del cuerpo: ${T_cuerpoNormal}°F
+
+Paso 1: Cálculo de la constante k
+k = -ln((${T2} - ${Ts}) / (${T1} - ${Ts})) = ${k.toFixed(4)}
+
+Paso 2: Cálculo del tiempo de muerte (t_muerte)
+t_muerte = -ln((${T1} - ${Ts}) / (${T_cuerpoNormal} - ${Ts})) / k = ${t_muerte.toFixed(
+          2
+        )} horas
+
+Paso 3: Conversión y cálculo de la hora de la muerte
+Tiempo transcurrido desde la muerte: ${horasAntes} horas y ${minutosAntes} minutos.
+Hora de la llegada del policía: 9:18 PM
+Hora de la muerte: ${horaMuerteFormato}
+            `;
+        document.getElementById("resultado2").textContent = resultado;
+      }
+
+      // Función para resolver el problema extra de propagación del error
+      function calcularProblema3() {
+        const mediaVida = 5730;
+        const porcentajeRestanteInput = parseFloat(
+          document.getElementById("porcentajeRestante3").value
+        );
+        const errorPorcentualInput = parseFloat(
+          document.getElementById("errorPorcentual3").value
+        );
+
+        if (isNaN(porcentajeRestanteInput) || isNaN(errorPorcentualInput)) {
+          document.getElementById("resultado3").textContent =
+            "Por favor, introduce valores numéricos válidos.";
+          return;
+        }
+
+        const porcentajeRestante = porcentajeRestanteInput / 100;
+        const errorPorcentual = errorPorcentualInput / 100;
+
+        const k = Math.log(0.5) / mediaVida;
+        const t = Math.log(porcentajeRestante) / k;
+
+        const dt_dP = 1 / (k * porcentajeRestante);
+        const errorP = porcentajeRestante * errorPorcentual;
+        const errorT = Math.abs(dt_dP) * errorP;
+
+        const edadMinima = t - errorT;
+        const edadMaxima = t + errorT;
+
+        const resultado = `
+**Problema 3: Propagación del Error en Huellas de Sucre**
+---------------------------------------------------------
+Vida media (T): ${mediaVida} años
+Porcentaje restante (P): ${porcentajeRestanteInput}%
+Error de medición: ±${errorPorcentualInput}%
+
+Paso 1: Cálculo de la edad base (t)
+t = ln(${porcentajeRestante}) / k = ${t.toFixed(2)} años
+
+Paso 2: Propagación del error
+Derivada de la edad respecto al porcentaje (dt/dP): ${dt_dP.toFixed(2)}
+Error en el porcentaje (delta_P): ${errorP.toFixed(4)}
+Error en la edad (delta_t): |dt/dP| * delta_P = ${errorT.toFixed(2)} años
+
+Edad estimada: ${Math.round(t)} años
+Rango de incertidumbre: ${Math.round(edadMinima)} a ${Math.round(
+          edadMaxima
+        )} años
+            `;
+        document.getElementById("resultado3").textContent = resultado;
+      }
+    </script>
+  </body>
+</html>
